@@ -1,0 +1,7 @@
+[
+{
+ "directory": "C:/Users/krugi/cstuff/filetool", 
+ "command": "clang++ -std=c++17 -I. -Iinclude main.cpp",
+ "file": "main.cpp"
+ }
+ ]
