@@ -40,7 +40,7 @@ Enter a blank space to exit.
 > search note
 [INFO] This will search all files recursively, continue? (y/n): y
 
-C:\Users\chrialonso\cstuff\file-cli\notes.txt
+/home/user/projects/file-cli/notes.txt
 1: This is my first note
 2: This is my second note
 
