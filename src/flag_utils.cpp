@@ -129,7 +129,7 @@ FlagError parseSize(const ParsedArg& arg, uintmax_t& out){
 FlagError applyFlag(const ParsedArg& arg, SearchConfig& config){
     std::string_view cmd = arg.command;
 
-    if(cmd == "max-file-size"){
+    if(cmd == "max-file-size" || cmd == "mfs"){
         if(!arg.hasValue) return FlagError::Ok;
         if(arg.unit.empty()) return FlagError::NoUnit;
 
@@ -139,7 +139,7 @@ FlagError applyFlag(const ParsedArg& arg, SearchConfig& config){
 
         config.maxFileSize = bytes;
         return FlagError::Ok;
-    }else if(cmd == "max-global-matches"){
+    }else if(cmd == "max-global-matches" || cmd == "mgm"){
         if(!arg.hasValue) return FlagError::Ok;
         if(!arg.unit.empty()) return FlagError::UnitNotAllowed; 
 
@@ -149,7 +149,7 @@ FlagError applyFlag(const ParsedArg& arg, SearchConfig& config){
 
         config.maxGlobalMatches = static_cast<size_t>(num);
         return FlagError::Ok;
-    }else if(cmd == "max-matches-per-file"){
+    }else if(cmd == "max-matches-per-file" || cmd == "mmpf")){
         if(!arg.hasValue) return FlagError::Ok;
         if(!arg.unit.empty()) return FlagError::UnitNotAllowed;
 
@@ -159,7 +159,7 @@ FlagError applyFlag(const ParsedArg& arg, SearchConfig& config){
 
         config.maxMatchesPerFile = static_cast<size_t>(num);
         return FlagError::Ok;
-    }else if(cmd == "max-depth"){
+    }else if(cmd == "max-depth" || cmd == "md"){
         if(!arg.hasValue) return FlagError::Ok;
         if(!arg.unit.empty()) return FlagError::UnitNotAllowed;
 
