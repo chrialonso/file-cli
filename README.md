@@ -2,6 +2,7 @@
 
 - **File Operations**: Create, read, edit, and delete files
 - **Smart Search**: Find files by name or search content using regex patterns
+- **Configurable Search**: Control search behavior with flags (file size limits, match counts, directory depth)
 - **Interactive Editing**: Append content to files with a simple line-by-line editor
 - **Robust Error Handling**: Detailed error messages for file system, input, and regex operations
 
@@ -15,18 +16,18 @@
 | `read [filename]` | Display file contents with line numbers |
 | `add [filename]` | Append content to a file interactively |
 | `find [pattern]` | Find files matching a regex pattern |
-| `search [pattern]` | Search file contents recursively for a pattern |
+| `search [pattern] [flags]` | Search file contents recursively with optional flags |
 | `delete [filename]` | Delete a file |
 | `exit` | Exit the program |
 
 ### Example Session
 ```
 > create notes.txt
-[SUCCESS] File 'notes.txt' created.
+[INFO] File 'notes.txt' created.
 
 > add notes.txt
 Editing file: 'notes.txt'
-Enter a blank space to exit.
+Enter !exit to exit.
 > This is my first note
 > This is my second note
 >  
@@ -37,13 +38,35 @@ Enter a blank space to exit.
 2: This is my second note
 [INFO] Total lines: 2
 
-> search note
-[INFO] This will search all files recursively, continue? (y/n): y
+> search TODO
 
-/home/user/projects/file-cli/notes.txt
-1: This is my first note
-2: This is my second note
+/home/user/project/src/main.cpp
+15: // TODO: Add error handling
+42: // TODO: Refactor this function
+
+> search myFunction() --max-file-size=2MB --max-depth=2
+[results]
+
+> search ERROR --max-global-matches=5 --max-matches-per-file=2
+[results]
+
+> find \.cpp$
+./src/main.cpp
+./src/commands.cpp
+./src/errors.cpp
 ```
+
+## Search Flags
+The `search` command supports optional flags for fine-grained control:
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--max-file-size=<size><unit>` | Skip files larger than specified (KB, MB, GB) | 5MB |
+| `--max-global-matches=<number>` | Maximum total matches across all files | 500 |
+| `--max-matches-per-file=<number>` | Maximum matches to show per file | 500 |
+| `--max-depth=<number>` | Maximum directory recursion depth | unlimited |
+
+Use `help search` for detailed flag information.
 
 ## Motivation
 
@@ -55,7 +78,7 @@ The goal was to create a system where:
 - Function signatures tell you exactly what can go wrong
 
 ## Design Decisions
-#### Type-Safe Error Handling
+### Type-Safe Error Handling
 Instead of exceptions, I use `enum class` error types with explicit return values:
 ```cpp
 std::pair<std::vector<std::string>, FileError> readFileLines(const std::string& filename);
@@ -67,7 +90,7 @@ std::pair<std::vector<std::string>, FileError> readFileLines(const std::string& 
 - **Compile-time safety**: Can't accidentally mix different error types
 - **Self-documenting**: Function signatures show they can fail
 
-#### `[[nodiscard]]` Attribute
+### `[[nodiscard]]` Attribute
 All functions returning errors or resources are marked `[[nodiscard]]`:
 ```cpp
 [[nodiscard]]
@@ -93,21 +116,49 @@ std::pair<std::vector<std::string>, FileError> readFileLines(const std::string& 
 
 Combined with `[[nodiscard]]`, this forces me to handle errors at compile-time, similar to how Rust's `?` operator makes error handling explicit.
 
-#### Structured Bindings (C++17)
+### Structured Bindings (C++17)
 Unpacking of `std::pair` returns:
 ```cpp
 auto [file, err] = parseCommand(input);
 if (!handleInputError(err)) return;
 ```
-
 More readable than `result.first` / `result.second`.
 
-#### Filesystem Library
+### Zero-Copy String Handling
+Used `std::string_view` for efficient string parsing without unnecessary copies, inspired by Rust's `&str`:
+
+**Rust:**
+```rust
+fn extract_query(s: &str) -> &str;
+fn tokenize(s: &str) -> Vec<&str>;
+```
+**My C++ equivalent:**
+```cpp
+std::string_view extractQuery(std::string_view sv);
+std::vector<std::string_view> tokenize(std::string_view sv);
+```
+
+**Benefits:**
+- **Zero allocations**: Views into existing strings instead of copies
+- **Faster parsing**: No memory allocation overhead for temporary strings
+- **Non-owning semantics**: Like Rust's borrows, views don't own their data
+- **Read-only safety**: Can't accidentally modify the original string
+
+
+### Filesystem Library
 Uses `std::filesystem` (C++17) instead of platform-specific APIs:
 - Cross-platform compatibility
 - RAII-style error handling with `std::error_code`
 - Type-safe path operations
+  
+### Flag Parsing System
 
+Implemented a custom flag parser for the search command that handles:
+- Multiple flags per command
+- Value + unit parsing (`--max-file-size=5MB`)
+- Numeric-only values (`--max-depth=3`)
+- Validation and error reporting
+  
 ### Architecture Patterns
 
 #### Separation of Concerns
@@ -129,4 +180,6 @@ Three-tier error handling:
 - Designing error handling systems without exceptions
 - Working with `std::filesystem` and its error handling
 - Using regex for pattern matching in a real application
+- Building a flexible command-line argument parser
+- Using `std::string_view` to avoid allocations, similar to Rust's `&str`
 - Structuring a multi-file C++ project with clear module boundaries
