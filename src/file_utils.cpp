@@ -4,7 +4,6 @@
 #include <filesystem>
 #include "errors.hpp"
 
-
 [[nodiscard]]
 FileError checkFile(const std::string &filename){
     if(filename.empty()) return FileError:: NoFileName;
@@ -100,7 +99,7 @@ std::pair<std::vector<std::string>, FileError> readFileLines(const std::string& 
 }
 
 [[nodiscard]]
-FileError listDirFiles(const std::filesystem::path &path = std::filesystem::current_path()){
+FileError listDirFiles(const std::filesystem::path &path){
     std::cout << "\n--- All Files ---\n";
     std::error_code ec;
 

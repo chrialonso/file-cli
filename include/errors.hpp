@@ -38,10 +38,25 @@ enum class RegexError{
     UnknownError,
 };
 
+enum class FlagError{
+    Ok,
+    EmptyFlag,
+    InvalidFlag,
+    NoValue,
+    NoUnit,
+    EmptyParams,
+    InvalidValue,
+    InvalidUnit,
+    UnitNotAllowed,
+    UnknownFlag,
+};
+
 void matchFileError(FileError err);
 void matchInputError(InputError err);
 void matchRegexError(RegexError err);
+void matchFlagError(FlagError err);
 
-bool handleFileError(FileError err);
-bool handleInputError(InputError err);
-bool handleRegexError(RegexError err);
+[[nodiscard]] bool handleFileError(FileError err);
+[[nodiscard]] bool handleInputError(InputError err);
+[[nodiscard]] bool handleRegexError(RegexError err);
+[[nodiscard]] bool handleFlagError(FlagError err);

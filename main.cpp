@@ -15,7 +15,7 @@ int main(){
             break;
         }
 
-        Command inputResult = matchCommand(input);
+        const Command inputResult = matchCommand(input);
         if(inputResult == Command::Exit) break;
         executeCommand(inputResult, input);
     }

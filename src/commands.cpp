@@ -1,7 +1,9 @@
 #include <iostream>
+#include "errors.hpp"
 #include "input_utils.hpp"
 #include "file_utils.hpp"
 #include "regex_utils.hpp"
+#include "flag_utils.hpp"
 
 void executeCommand(const Command& cmd, const std::string& input){
         switch(cmd){
@@ -16,6 +18,10 @@ void executeCommand(const Command& cmd, const std::string& input){
                 handleEditCommand(file);
                 break;
                                 }
+            case Command::FlagDetails:{
+                showFlagDetails();
+                break;
+                                      }
             case Command::Read:{
                 auto [file, inputErr] = parseCommand(input);
                 if(!handleInputError(inputErr)) break;
@@ -37,14 +43,13 @@ void executeCommand(const Command& cmd, const std::string& input){
 
                 FileError createResult = createFile(file);
                 if(handleFileError(createResult)){
-                    std::cout << "[SUCCESS] File '" << file << "' created.\n";
+                    std::cout << "[INFO] File '" << file << "' created.\n";
                 }
                 break;
                                  }
             case Command::List:{
                 FileError listResult = listDirFiles();
-                handleFileError(listResult);
-                break;
+                if(!handleFileError(listResult)) break;
                                }
             case Command::Find:{
                 auto [query, inputErr] = parseCommand(input);
@@ -62,22 +67,35 @@ void executeCommand(const Command& cmd, const std::string& input){
                 break;
                                }
             case Command::Search:{
-                std::cout << "[INFO] This will search all files recursively, continue? (y/n): ";
-                std::string confirm;
-                std::getline(std::cin, confirm);
-                if(confirm != "Y" && confirm != "y"){
-                    std::cout << "[INFO] Recursive search cancelled.\n";
-                    break;
-                }
+                std::string_view querySV = extractQuery(input);
+                std::string query = std::string(querySV);
+                std::string_view params = skipWords(input);
 
-                auto [query, err] = parseCommand(input);
-                if(!handleInputError(err)) break;
+                SearchConfig config;
+
+                if(!params.empty()){
+                    auto tokens = tokenize(params);
+
+                    auto [parsedArgs, flagErr] = splitFlag(tokens);
+                    if(!handleFlagError(flagErr)) break;
+
+                    bool flagError = false;
+                    for(const auto& arg : parsedArgs){
+                        FlagError applyFlagResult = applyFlag(arg, config);
+                        if(!handleFlagError(applyFlagResult)){
+                            flagError = true;
+                            break;
+                        }
+                    }
+                    if(flagError) break;
+                }
 
                 auto [re, regErr] = compileRegex(query);
                 if(!handleRegexError(regErr)) break;
 
-                RegexError res = findInFile(query, re);
+                RegexError res = findInFile(query, re, config);
                 if(!handleRegexError(res)) break;
+
                 break;
                                  }
             case Command::Delete:{
@@ -86,7 +104,7 @@ void executeCommand(const Command& cmd, const std::string& input){
 
                 FileError deleteResult = deleteFile(file);
                 if(handleFileError(deleteResult)){
-                    std::cout << "[SUCCESS] File '" << file << "' deleted.\n";
+                    std::cout << "[INFO] File '" << file << "' deleted.\n";
                 }
                 break;
                                  }

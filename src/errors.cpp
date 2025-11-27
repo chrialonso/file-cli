@@ -99,6 +99,40 @@ void matchRegexError(RegexError err){
     }
 }
 
+void matchFlagError(FlagError err){
+    switch(err){
+        case FlagError::Ok:
+            break;
+        case FlagError::EmptyFlag:
+            std::cerr << "[ERROR] Flag field is empty.\n";
+            break;
+        case FlagError::InvalidFlag:
+            std::cerr << "[ERROR] Invalid flag.\n";
+            break;
+        case FlagError::NoValue:
+            std::cerr << "[ERROR] Flag has no value.\n";
+            break;
+        case FlagError::NoUnit:
+            std::cerr << "[ERROR] Flag has no unit.\n";
+            break;
+        case FlagError::EmptyParams:
+            std::cerr << "[ERROR] Flag has empty parameters.\n";
+            break;
+        case FlagError::InvalidValue:
+            std::cerr << "[ERROR] Flag has an invalid value.\n";
+            break;
+        case FlagError::InvalidUnit:
+            std::cerr << "[ERROR] Flag has an invalid unit.\n";
+            break;
+        case FlagError::UnitNotAllowed:
+            std::cerr << "[ERROR] This flag does not accept a unit.\n";
+            break;
+        case FlagError::UnknownFlag:
+            std::cerr << "[ERROR] Unknown flag.\n";
+            break;
+    }
+}
+
 bool handleFileError(FileError err){
     if(err != FileError::Ok){
         matchFileError(err);
@@ -118,6 +152,14 @@ bool handleInputError(InputError err){
 bool handleRegexError(RegexError err){
     if(err != RegexError::Ok){
         matchRegexError(err);
+        return false;
+    }
+    return true;
+}
+
+bool handleFlagError(FlagError err){
+    if(err != FlagError::Ok){
+        matchFlagError(err);
         return false;
     }
     return true;

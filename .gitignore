@@ -39,3 +39,18 @@
 
 # debug information files
 *.dwo
+
+# temporary files
+*.tmp
+*.bak
+*.log
+
+# build directories
+build/
+bin/
+obj/
+out/
+
+main
+
+.cache/

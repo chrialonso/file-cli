@@ -5,6 +5,7 @@
 enum class Command{
     Exit,
     Help,
+    FlagDetails,
     Read,
     Create,
     Add,
@@ -15,8 +16,9 @@ enum class Command{
     InvalidCommand,
 };
 
-InputError parseInput(const std::string& input);
-std::pair<std::string, InputError> parseCommand(const std::string& input);
+[[nodiscard]] InputError parseInput(const std::string& input);
+[[nodiscard]] std::pair<std::string, InputError> parseCommand(const std::string& input);
+void handleEditCommand(const std::string& filename);
 Command matchCommand(const std::string& input);
 void showCommands();
-void handleEditCommand(const std::string& filename);
+void showFlagDetails();
