@@ -59,12 +59,12 @@ Enter !exit to exit.
 ## Search Flags
 The `search` command supports optional flags for fine-grained control:
 
-| Flag | Description | Default |
-|------|-------------|---------|
-| `--max-file-size=<size><unit>` | Skip files larger than specified (KB, MB, GB) | 5MB |
-| `--max-global-matches=<number>` | Maximum total matches across all files | 500 |
-| `--max-matches-per-file=<number>` | Maximum matches to show per file | 500 |
-| `--max-depth=<number>` | Maximum directory recursion depth | unlimited |
+| Flag | Shorthand | Description | Default |
+|------|-----------|-------------|---------|
+| `--max-file-size=<size><unit>` | `--mfs=<size><unit>` | Skip files larger than specified (KB, MB, GB) | 5MB |
+| `--max-global-matches=<number>` | `--mgm=<number>` | Maximum total matches across all files | 500 |
+| `--max-matches-per-file=<number>` | `--mmpf=<number>` | Maximum matches to show per file | 500 |
+| `--max-depth=<number>` | `--md=<number>` | Maximum directory recursion depth | unlimited |
 
 Use `help search` for detailed flag information.
 
