@@ -1,6 +1,6 @@
 [
 {
- "directory": "C:/Users/krugi/cstuff/filetool", 
+ "directory": "C:/Users/Chris/cstuff/file-cli", 
  "command": "clang++ -std=c++17 -I. -Iinclude main.cpp",
  "file": "main.cpp"
  }

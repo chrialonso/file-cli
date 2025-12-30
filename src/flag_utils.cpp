@@ -119,7 +119,7 @@ FlagError parseSize(const ParsedArg& arg, uintmax_t& out){
         }else if(arg.unit == "MB"){
             out = num * MB;
         }else if(arg.unit == "GB"){
-            out = num * MB * 1024;
+            out = num * GB;
         }else{
             return FlagError::InvalidUnit;
         }
@@ -149,7 +149,7 @@ FlagError applyFlag(const ParsedArg& arg, SearchConfig& config){
 
         config.maxGlobalMatches = static_cast<size_t>(num);
         return FlagError::Ok;
-    }else if(cmd == "max-matches-per-file" || cmd == "mmpf")){
+    }else if(cmd == "max-matches-per-file" || cmd == "mmpf"){
         if(!arg.hasValue) return FlagError::Ok;
         if(!arg.unit.empty()) return FlagError::UnitNotAllowed;
 

@@ -50,6 +50,7 @@ void executeCommand(const Command& cmd, const std::string& input){
             case Command::List:{
                 FileError listResult = listDirFiles();
                 if(!handleFileError(listResult)) break;
+                break;
                                }
             case Command::Find:{
                 auto [query, inputErr] = parseCommand(input);

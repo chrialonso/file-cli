@@ -79,7 +79,6 @@ RegexError findInFile(const std::string &pattern, const std::regex &re, SearchCo
 
         if(config.maxDepth >= 0 && it.depth() > config.maxDepth){
             it.disable_recursion_pending();
-            continue;
         }
 
         std::error_code stat_ec;
@@ -114,7 +113,7 @@ RegexError findInFile(const std::string &pattern, const std::regex &re, SearchCo
         inFile.seekg(0);
 
         std::string line;
-        size_t lineNo= 0;
+        size_t lineNo = 0;
         bool printedHeaderForFile = false;
         size_t totalMatchesPerFile = 0;
         while(std::getline(inFile, line)){

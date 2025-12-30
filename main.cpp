@@ -1,10 +1,13 @@
 #include <iostream>
 #include <string>
+#include <filesystem>
 #include "input_utils.hpp"
 #include "commands.hpp"
 
 int main(){
-    std::cout << "\nWelcome to my WIP CLI program! Type 'help' for commands.\n";
+std::cout << "\n--- CLI File Manager v1.0 ---\n";
+std::cout << "Current directory: " << std::filesystem::current_path().string() << "\n";
+std::cout << "Type 'help' for commands or 'exit' to quit.\n";
     std::string input;
 
     while(true){
