@@ -149,7 +149,7 @@ FlagError applyFlag(const ParsedArg& arg, SearchConfig& config){
 
         config.maxGlobalMatches = static_cast<size_t>(num);
         return FlagError::Ok;
-    }else if(cmd == "max-matches-per-file" || cmd == "mmpf")){
+    }else if(cmd == "max-matches-per-file" || cmd == "mmpf"){
         if(!arg.hasValue) return FlagError::Ok;
         if(!arg.unit.empty()) return FlagError::UnitNotAllowed;
 
